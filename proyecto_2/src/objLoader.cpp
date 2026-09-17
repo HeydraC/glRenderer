@@ -1,16 +1,24 @@
 #include "objLoader.h"
 
 bool loadObject(std::string filename, std::vector<Vertex> &outVertices){
-        tinyobj::attrib_t attrib;
+    tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
     std::vector<tinyobj::material_t> materials;
     std::string err;
-    std::istringstream iss(filename);
 
-    bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, &iss);
+    std::filesystem::path filepath = std::filesystem::path(SRC) / "models";
+
+    std::ifstream file(filepath / filename);
+
+    if (!file.is_open()) {
+        std::cout<<"Error al abrir "<< filename << std::endl;
+        exit(1);
+    }
+
+    bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, &file);
 
     if (!err.empty()) {
-        std::cout<<"Error al cargar "<<filename<<err<<std::endl;
+        std::cout<<"Error al cargar "<<filename<<": "<<err<<std::endl;
         exit(1);
     }
     if (!ret) {

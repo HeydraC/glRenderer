@@ -3,7 +3,7 @@
 #
 
 # Add source to this project's executable.
-add_executable (proyecto2 "src/proyecto2.cpp" "src/proyecto2.h" "src/objLoader.cpp" "src/objLoader.h" "src/mesh.h" "src/mesh.cpp" "vertex.h")
+add_executable (proyecto2 "src/proyecto2.cpp" "src/proyecto2.h" "src/objLoader.cpp" "src/objLoader.h" "src/mesh.h" "src/mesh.cpp" "src/vertex.h")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET proyecto2 PROPERTY CXX_STANDARD 20)
@@ -20,7 +20,6 @@ target_link_libraries(proyecto2 PRIVATE
     tol
 )
 
-# Para acceder a los shaders
 target_compile_definitions(proyecto2 PRIVATE
-    SHADER_DIR="${CMAKE_CURRENT_SOURCE_DIR}/shaders/"
+    SRC="${CMAKE_CURRENT_SOURCE_DIR}"
 )
