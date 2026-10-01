@@ -1,3 +1,4 @@
+#define TINYOBJLOADER_IMPLEMENTATION
 #include "objLoader.h"
 
 bool loadObject(std::string filename, std::vector<Vertex> &outVertices){
@@ -12,14 +13,14 @@ bool loadObject(std::string filename, std::vector<Vertex> &outVertices){
 
     if (!file.is_open()) {
         std::cout<<"Error al abrir "<< filename << std::endl;
-        exit(1);
+        return false;
     }
 
     bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, &file);
 
     if (!err.empty()) {
         std::cout<<"Error al cargar "<<filename<<": "<<err<<std::endl;
-        exit(1);
+        return false;
     }
     if (!ret) {
         return false;

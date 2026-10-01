@@ -7,8 +7,9 @@
 #include "objLoader.h"
 
 struct Mesh {
-    GLuint vao = 0;
-    GLuint vbo = 0;
+    GLuint vao = -1;
+    GLuint vbo = -1;
+    glm::vec4 objectColor;
 
     std::vector<Vertex> vertices;
     glm::mat4 model = {{1, 0, 0, 0},
@@ -21,7 +22,7 @@ struct Mesh {
 
     void update(const float*);
 
-    void draw(GLuint, GLint);
+    void draw(GLuint, GLint, GLint);
 
     void destroy();
 

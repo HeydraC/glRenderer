@@ -1,9 +1,12 @@
 #include "mesh.h"
 
 Mesh::Mesh(std::string fileName){
-    loadObject(fileName, vertices);
+    if (!loadObject(fileName, vertices))
+        return;
+    
     vbo = createVBO(vertices, GL_DYNAMIC_DRAW);
     vao = createVAO();
+    objectColor = {0.0f, 0.0f, 1.0f, 1.0f};
 }
 
 GLuint Mesh::createVBO(std::vector<Vertex>& vertices, GLenum usage){
@@ -39,8 +42,9 @@ void Mesh::update(const float* newVertices){
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void Mesh::draw(GLuint shaderProgram, GLint modelLocation){
+void Mesh::draw(GLuint shaderProgram, GLint modelLocation, GLint objectColorLocation){
     glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &model[0][0]);
+    glUniform4fv(objectColorLocation, 1, &objectColor[0]);
     
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()));

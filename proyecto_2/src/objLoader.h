@@ -6,7 +6,6 @@
 #include <vector>
 #include <filesystem>
 #include "vertex.h"
-#include "objLoader.h"
 
 #ifndef SRC
     #define SRC "."
