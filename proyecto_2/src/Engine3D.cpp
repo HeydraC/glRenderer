@@ -6,7 +6,7 @@ Engine3D::Engine3D(int _width, int _height){
     aspect = (float)width/height;
 
     lastFrame = 0.0f;
-    fps = 0.0f;
+    timeElapsed = 0.0f;
 
     projection = glm::perspective(glm::radians(45.0f), aspect, 0.1f, 100.0f);
 
@@ -14,7 +14,11 @@ Engine3D::Engine3D(int _width, int _height){
     lightColor   = glm::vec3(1.0f, 1.0f, 1.0f);
     ambientLight = glm::vec3(0.15f, 0.15f, 0.15f);
 
+    backgroundColor = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
+
     createGLFWwindow();
+
+    imguiInit();
 
     processShaders();
 
@@ -25,6 +29,15 @@ Engine3D::Engine3D(int _width, int _height){
 
 Engine3D::~Engine3D(){
     for (Mesh &mesh : meshes) mesh.destroy();
+
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
+    if (window) {
+        glfwDestroyWindow(window);
+        glfwTerminate();
+    }
 }
 
 bool Engine3D::closedWindow(){ return glfwWindowShouldClose(window); }
@@ -45,7 +58,7 @@ void Engine3D::createGLFWwindow(){
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    window = glfwCreateWindow(800, 600, "Proyecto 2 Carlos Heydra", NULL, NULL);
+    window = glfwCreateWindow(800, 600, "Proyecto 2 Carlos Heydra | FPS: 0.0", NULL, NULL);
 
     if (!window){
         glfwTerminate();
@@ -55,6 +68,8 @@ void Engine3D::createGLFWwindow(){
 
     glfwMakeContextCurrent(window);
 
+    glfwSwapInterval(0);
+
     if (!gladLoadGL(glfwGetProcAddress)){
         std::cout<<"Error al cargar punteros de GLAD"<<std::endl;
         exit(-1);
@@ -62,6 +77,20 @@ void Engine3D::createGLFWwindow(){
 
     glViewport(0, 0, width, height);
     glEnable(GL_DEPTH_TEST);
+}
+
+void Engine3D::imguiInit(){
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; // docking branch is enabled in CMakeLists[cite: 10]
+
+    ImGui::StyleColorsDark();
+
+    // Initialize backend bindings
+    ImGui_ImplGlfw_InitForOpenGL(window, true); // true sets up GLFW callbacks automatically
+    ImGui_ImplOpenGL3_Init("#version 330");
 }
 
 void Engine3D::processShaders(){

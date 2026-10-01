@@ -41,10 +41,12 @@ private:
     GLFWwindow* window;
     int width, height;
     float aspect;
-    float lastFrame, delta, fps;
+    float lastFrame, delta, timeElapsed;
 
     glm::mat4 view, projection;
     glm::vec3 lightDir, lightColor, ambientLight;
+
+    glm::vec4 backgroundColor;
     
     Shader shader;
 
@@ -52,15 +54,23 @@ private:
 
     std::vector<Mesh> meshes;
 
+    ImGuiContext* context;
+
+    float bColor[3] = {0.1f, 0.1f,0.1f};
+
     void getUniformLocations();
 
     void createGLFWwindow();
+
+    void imguiInit();
 
     void processShaders();
 
     void frameCount();
 
     void checkKeyboard();
+
+    void drawGUI();
 
 public:
     Engine3D(int = 800, int = 600);

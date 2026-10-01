@@ -1,13 +1,16 @@
 #include "Engine3D.h"
 
 void Engine3D::run(){
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
 
     view = glm::lookAt(cam.pos, cam.target, cam.up);
 
     glUseProgram(shader.program);
-
     glUniformMatrix4fv(shader.projection, 1, GL_FALSE, &projection[0][0]);
     glUniformMatrix4fv(shader.view, 1, GL_FALSE, &view[0][0]);
     glUniform3fv(shader.lightDir, 1, &lightDir[0]);
@@ -16,6 +19,9 @@ void Engine3D::run(){
 
     for (Mesh &mesh : meshes) mesh.draw(shader.program, shader.model, shader.objectColor);
 
+    drawGUI();
+
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     glfwSwapBuffers(window);
     glfwPollEvents();
 
@@ -29,11 +35,10 @@ void Engine3D::frameCount(){
     delta = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
-    static float time_elapsed = 0;
-    time_elapsed += delta;
+    timeElapsed += delta;
 
-    if (time_elapsed >= 1.0f){
-        time_elapsed = 0;
+    if (timeElapsed >= 1.0f){
+        timeElapsed = 0;
         
         std::string title = "Proyecto 2 Carlos Heydra | FPS: " + std::to_string(1.0f/delta);
 
@@ -42,6 +47,9 @@ void Engine3D::frameCount(){
 }
 
 void Engine3D::checkKeyboard(){
+    ImGuiIO& io = ImGui::GetIO();
+    if (io.WantCaptureKeyboard) return;
+
     float moveSpeed = 5.0f;
     float rotSpeed = 75.0f;
 
@@ -87,4 +95,17 @@ void Engine3D::checkKeyboard(){
         glm::mat4 rot = glm::rotate(glm::mat4(1.0f), glm::radians(-rotSpeed * delta), right);
         cam.target = cam.pos + glm::vec3(rot * glm::vec4(forward, 0.0f));
     }
+}
+
+void Engine3D::drawGUI(){
+    ImGui::Begin("Herramientas");
+
+    if (ImGui::ColorEdit3("Color Fondo", bColor)) {
+        backgroundColor.r = bColor[0];
+        backgroundColor.g = bColor[1];
+        backgroundColor.b = bColor[2];
+    }
+
+    ImGui::End();
+    ImGui::Render();
 }
