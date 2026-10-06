@@ -5,10 +5,10 @@
 #include <fstream>
 #include <vector>
 #include <filesystem>
-#include "vertex.h"
+#include "mesh.h"
 
 #ifndef SRC
     #define SRC "."
 #endif
 
-bool loadObject(std::string, std::vector<Vertex>&);
+bool loadObject(std::string, std::vector<Mesh>&);

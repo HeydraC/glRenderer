@@ -1,0 +1,35 @@
+newmtl snakeboard_wood
+Ns 1023
+d 1
+illum 2
+Kd 0.25098 0.25098 0.25098
+Ks 1 1 1
+
+newmtl snakeboard_graphite
+Ns 2047
+d 1
+illum 2
+Kd 0.270588 0.270588 0.270588
+Ks 1 1 1
+
+newmtl snakeboard_green
+Ns 4
+d 1
+illum 2
+Kd 0.137255 0.286275 0.14902
+Ks 1 1 1
+
+newmtl trucks
+Ns 32
+d 1
+illum 2
+Kd 0.623529 0.623529 0.623529
+Ks 1 1 1
+
+newmtl snakeboard_wheel
+Ns 8
+d 1
+illum 2
+Kd 0.92549 0.933333 0.74902
+Ks 1 1 1
+

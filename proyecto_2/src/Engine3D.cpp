@@ -24,11 +24,11 @@ Engine3D::Engine3D(int _width, int _height){
 
     getUniformLocations();
 
-    meshes.push_back(Mesh("teapot.obj"));
+    cam.updateVectors();
 }
 
 Engine3D::~Engine3D(){
-    for (Mesh &mesh : meshes) mesh.destroy();
+    for (Model& model : models) model.destroy();
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
@@ -58,7 +58,7 @@ void Engine3D::createGLFWwindow(){
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    window = glfwCreateWindow(800, 600, "Proyecto 2 Carlos Heydra | FPS: 0.0", NULL, NULL);
+    window = glfwCreateWindow(width, height, "Proyecto 2 Carlos Heydra | FPS: 0.0", NULL, NULL);
 
     if (!window){
         glfwTerminate();
@@ -76,7 +76,13 @@ void Engine3D::createGLFWwindow(){
     }
 
     glViewport(0, 0, width, height);
+    glfwSetWindowUserPointer(window, this);
+	glfwSetKeyCallback(window, keyCallback);
+	glfwSetMouseButtonCallback(window, mouseButtonCallback);
+	glfwSetCursorPosCallback(window, cursorPosCallback);
+    glfwSetFramebufferSizeCallback(window, windowSizeCallback);
     glEnable(GL_DEPTH_TEST);
+    glCullFace(GL_BACK);
 }
 
 void Engine3D::imguiInit(){
@@ -84,12 +90,11 @@ void Engine3D::imguiInit(){
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; // docking branch is enabled in CMakeLists[cite: 10]
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
     ImGui::StyleColorsDark();
 
-    // Initialize backend bindings
-    ImGui_ImplGlfw_InitForOpenGL(window, true); // true sets up GLFW callbacks automatically
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
 }
 
@@ -160,4 +165,40 @@ void Engine3D::processShaders(){
 
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
+}
+
+void Engine3D::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
+	if (key < 0 || key >= GLFW_KEY_LAST) return;
+	Engine3D* engine = static_cast<Engine3D*>(glfwGetWindowUserPointer(window));
+	if (action == GLFW_PRESS) {
+		engine->onKeyDown(key);
+	}
+	else if (action == GLFW_RELEASE) {
+		engine->onKeyUp(key);
+	}
+}
+
+void Engine3D::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods){
+	if (button < 0 || button >= GLFW_MOUSE_BUTTON_LAST) return;
+	Engine3D* engine = static_cast<Engine3D*>(glfwGetWindowUserPointer(window));
+	glm::vec2 mousePos = engine->getMousePosition();
+	if (action == GLFW_PRESS) {
+		engine->onMouseButtonDown(button, mousePos.x, mousePos.y);
+	}
+	else if (action == GLFW_RELEASE) {
+		engine->onMouseButtonUp(button, mousePos.x, mousePos.y);
+	}
+}
+
+void Engine3D::cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
+	Engine3D* engine = static_cast<Engine3D*>(glfwGetWindowUserPointer(window));
+	if (engine) {
+		engine->onMouseMove(xpos, ypos);
+	}
+}
+
+void Engine3D::windowSizeCallback(GLFWwindow* window, int width, int height){
+    Engine3D* engine = static_cast<Engine3D*>(glfwGetWindowUserPointer(window));
+    glViewport(0, 0, width, height);
+    engine->aspect = (float)width/height;
 }

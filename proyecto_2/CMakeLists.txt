@@ -7,9 +7,10 @@ add_executable (proyecto2
     "src/proyecto2.cpp"
     "src/objLoader.cpp" "src/objLoader.h"
     "src/mesh.cpp" "src/mesh.h"
-    "src/vertex.h"
+    "src/Model.cpp" "src/Model.h"
     "src/Engine3D.cpp" "src/Engine3D.h"
     "src/mainLoop.cpp"
+    "src/colorPick.cpp"
 )
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
