@@ -50,7 +50,7 @@ void Model::makeCube(){
     meshes.emplace_back(vertices, glm::vec4{1.0f});
 }
 
-void addTriangle(std::vector<Vertex> vertices, glm::vec3 p0, glm::vec3 p1,glm::vec3 p2){
+void addTriangle(std::vector<Vertex>& vertices, glm::vec3 p0, glm::vec3 p1,glm::vec3 p2){
     glm::vec3 normal = glm::normalize(glm::cross(p1 - p0, p2 - p0));
     vertices.push_back({p0, normal});
     vertices.push_back({p1, normal});
