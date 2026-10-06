@@ -206,10 +206,6 @@ void Engine3D::drawGUI(){
         backFaceCulling ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
     }
 
-    ImGui::InputFloat("Sensibilidad", &sensitivity, 0.01f, 1.0f, "%.3f");
-    ImGui::InputFloat("Vel. rotación", &rotSpeed, 0.01f, 1.0f, "%.3f");
-    ImGui::InputFloat("Vel. movimiento", &moveSpeed, 0.01f, 1.0f, "%.3f");
-
     if (ImGui::Button("Borrar escena")){
         for (Model& model : models) model.destroy();
 
